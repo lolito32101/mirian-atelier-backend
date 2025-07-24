@@ -79,7 +79,7 @@ const registro_proveedor_admin = async function(req,res){
 const actualizar_proveedor_admin = async function (req, res) {
     try {
         if (req.user) {
-            if (req.user.role == 'admin') {
+            if (req.user.rol == 'admin') {
                 var id = req.params['id'];
                 var data = req.body;
 
