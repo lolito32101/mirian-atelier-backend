@@ -34,8 +34,10 @@ app.use(bodyparser.json({ limit: '50mb', extended: true }));
 
 /* Configuración CORS oficial con origen específico */
 app.use(cors({
-    origin: 'https://wonderful-madeleine-04514e.netlify.app', // tu frontend en Netlify
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    origin: [
+        'https://wonderful-madeleine-04514e.netlify.app', // producción
+        'http://localhost:4200'                            // desarrollo local
+    ], 
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));

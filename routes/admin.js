@@ -1,4 +1,5 @@
-'use stritc'
+'use strict'
+
 
 var express = require('express');
 var adminController = require('../controllers/AdminController');

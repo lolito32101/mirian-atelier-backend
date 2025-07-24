@@ -62,22 +62,9 @@ const obtener_config_admin = async function (req, res) {
     }
 }
 
-/* METODO - OBTIENE LOGO ACTUAL DE LA TIENDA */
-const obtener_logo = async function (req, res) {
-    var img = req.params['img'];
-    fs.stat('./uploads/logos/nuevos_logos/' + img, function (err) {
-        if (!err) {
-            let path_img = './uploads/logos/nuevos_logos/' + img;
-            res.status(200).sendFile(path.resolve(path_img));
-        } else {
-            let path_img = './uploads/logo_default.png';
-            res.status(200).sendFile(path.resolve(path_img));
-        }
-    })
-}
 
 module.exports = {
     actualizar_config_admin,
     obtener_config_admin,
-    obtener_logo,
+
 }
