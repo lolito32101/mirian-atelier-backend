@@ -77,41 +77,49 @@ const registro_proveedor_admin = async function(req,res){
 
 /* MÉTODO - ACTUALIZAR PROVEEDOR */
 const actualizar_proveedor_admin = async function (req, res) {
-    if (req.user) {
-        if (req.user.role == 'admin') {
-            var id = req.params['id'];
-            var data = req.body;
+    try {
+        if (req.user) {
+            if (req.user.role == 'admin') {
+                var id = req.params['id'];
+                var data = req.body;
 
-            var proveedores_nombres_arr = [];
-            var proveedores_correo_arr = [];
-            var proveedores_telefono_arr = [];
-            var proveedores_ruc_arr = [];
+                var proveedores_nombres_arr = await Proveedor.find({ nombre: data.nombre, _id: { $ne: id } });
+                var proveedores_correo_arr = await Proveedor.find({ correo: data.correo, _id: { $ne: id } });
+                var proveedores_telefono_arr = await Proveedor.find({ telefono: data.telefono, _id: { $ne: id } });
+                var proveedores_ruc_arr = await Proveedor.find({ ruc: data.ruc, _id: { $ne: id } });
 
-            proveedores_nombres_arr = await Proveedor.find({ nombre: data.nombre, _id: { $ne: id} });
-            proveedores_correo_arr = await Proveedor.find({ correo: data.correo, _id: { $ne: id} });
-            proveedores_telefono_arr = await Proveedor.find({ telefono: data.telefono, _id: { $ne: id} });
-            proveedores_ruc_arr = await Proveedor.find({ ruc: data.ruc, _id: { $ne: id} });
-
-            if(proveedores_nombres_arr.length == 0 && proveedores_correo_arr.length == 0 && proveedores_telefono_arr.length == 0 && proveedores_ruc_arr.length == 0){
-                var reg = await Proveedor.findByIdAndUpdate({ _id: id }, {
-                    nombre: data.nombre,
-                    correo: data.correo,
-                    telefono: data.telefono,
-                    ruc: data.ruc,
-                    direccion: data.direccion
-                });
-                res.status(200).send({ data: reg });
+                if (
+                    proveedores_nombres_arr.length == 0 &&
+                    proveedores_correo_arr.length == 0 &&
+                    proveedores_telefono_arr.length == 0 &&
+                    proveedores_ruc_arr.length == 0
+                ) {
+                    var reg = await Proveedor.findByIdAndUpdate(
+                        { _id: id },
+                        {
+                            nombre: data.nombre,
+                            correo: data.correo,
+                            telefono: data.telefono,
+                            ruc: data.ruc,
+                            direccion: data.direccion
+                        },
+                        { new: true }
+                    );
+                    res.status(200).send({ data: reg });
+                } else {
+                    res.status(500).send({ message: 'Datos del proveedor ya está en uso' });
+                }
             } else {
-                res.status(500).send({ message: 'Datos del proveedor ya esta en uso' });
+                res.status(500).send({ message: 'NoAccess' });
             }
         } else {
             res.status(500).send({ message: 'NoAccess' });
         }
-    } else {
-        res.status(500).send({ message: 'NoAccess' });
+    } catch (error) {
+        console.log('ERROR AL ACTUALIZAR PROVEEDOR:', error);
+        res.status(500).send({ message: 'Error en el servidor', error });
     }
 }
-
 /* MÉTODO - ELIMINAR PROVEEDOR */
 const eliminar_proveedor_admin = async function (req, res) {
     if (req.user) {
